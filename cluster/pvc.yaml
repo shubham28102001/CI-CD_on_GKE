@@ -1,0 +1,33 @@
+# PersistentVolume definition:
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: persistent-volume
+spec:
+  capacity:
+    storage: 10Gi
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: kubernetes-volume
+    fsType: ext4
+
+---
+
+# PersistentVolumeClaim definition:
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: persistent-volume-claim
+spec:
+  volumeName: persistent-volume
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi  
+  storageClassName: standard
+  selector:
+    matchLabels:
+      name: persistent-volume

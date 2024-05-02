@@ -1,0 +1,44 @@
+# Deployment definition:
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container1-deployement
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container-1
+  template:
+    metadata:
+      labels:
+        app: container-1
+    spec:
+      containers:
+        - name: container-1
+          image: us-central1-docker.pkg.dev/kubernetesassignment-417521/kubernetes-assignment/container-1
+          imagePullPolicy: Always # To pull the latest version of the image
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: data-volume
+              mountPath: /app/Shubham_PV_dir
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: persistent-volume-claim
+
+---
+
+# Service definition:
+apiVersion: v1
+kind: Service
+metadata:
+  name: container1-service
+spec:
+  selector:
+    app: container-1
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: LoadBalancer
